@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="LoyaltyCard.Api/LoyaltyCard.Api.csproj" />
+  <Project Path="LoyaltyCard.Application/LoyaltyCard.Application.csproj" />
+  <Project Path="LoyaltyCard.Domain/LoyaltyCard.Domain.csproj" />
+  <Project Path="LoyaltyCard.Infrastructure/LoyaltyCard.Infrastructure.csproj" />
+  <Project Path="LoyaltyCard.Tests/LoyaltyCard.Tests.csproj" />
+  <Project Path="LoyaltyCard.Worker/LoyaltyCard.Worker.csproj" />
+</Solution>
