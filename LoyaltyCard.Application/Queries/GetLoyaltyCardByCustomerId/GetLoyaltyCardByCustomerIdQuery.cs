@@ -1,0 +1,2 @@
+﻿namespace LoyaltyCard.Application.Queries.GetLoyaltyCardByCustomerId;
+public record GetLoyaltyCardByCustomerIdQuery(Guid CustomerId);
