@@ -1,7 +1,7 @@
-﻿using LoyaltyCard.Application.Commands.AddLoyaltyCard;
+﻿using LoyaltyCard.Application.Queries.GetLoyaltyCardByCustomerId;
+using LoyaltyCard.Application.Commands.AddLoyaltyCard;
 using LoyaltyCard.Application.Commands.UpdateLoyaltyCard;
 using LoyaltyCard.Application.Dtos;
-using LoyaltyCard.Application.Queries.GetLoyaltyCardByCustomerId;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LoyaltyCard.Api.Controllers;
@@ -39,16 +39,18 @@ public class LoyaltyCardController : ControllerBase
 
 
     [HttpPost]
-    public async Task<IActionResult> Create(AddLoyaltyCardCommand command,CancellationToken token)
+    public async Task<IActionResult> Create(AddLoyaltyCardDto dto,CancellationToken token)
     {
+        var command = new AddLoyaltyCardCommand(dto.CustomerId);
         await _addHandler.HandleAsync(command, token);
 
         return Ok("Loyalty card created");
     }
 
     [HttpPut("points")]
-    public async Task<IActionResult> UpdatePoints(UpdateLoyaltyCardCommand command, CancellationToken token)
+    public async Task<IActionResult> UpdatePoints(Guid customerId, UpdateLoyaltyCardPointsDto dto, CancellationToken token)
     {
+        var command = new UpdateLoyaltyCardCommand(customerId, dto.Points);
         await _updateHandler.HandleAsync(command, token);
 
         return NoContent();

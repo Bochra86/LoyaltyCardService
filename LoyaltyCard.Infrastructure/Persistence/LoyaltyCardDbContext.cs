@@ -1,6 +1,6 @@
 ﻿using LoyaltyCard.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-namespace LoyaltyCard.Infrastructure.Data;
+namespace LoyaltyCard.Infrastructure.Persistence;
 
 public class LoyaltyCardDbContext: DbContext
 {
