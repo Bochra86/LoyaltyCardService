@@ -8,6 +8,7 @@ public class LoyaltyCardDbContext: DbContext
     {
     }
     public DbSet<LoyaltyCardEntity> LoyaltyCards => Set<LoyaltyCardEntity>();
+    public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -22,6 +23,13 @@ public class LoyaltyCardDbContext: DbContext
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Points).IsRequired();
             entity.Property(e => e.CreatedAt).IsRequired();
+        });
+
+        modelBuilder.Entity<OutboxMessage>(x =>
+        {
+            x.HasKey(o => o.Id);
+            x.Property(o => o.Type).IsRequired();
+            x.Property(o => o.Payload).IsRequired();
         });
     }
 }

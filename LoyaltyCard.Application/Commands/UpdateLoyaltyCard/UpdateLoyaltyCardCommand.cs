@@ -1,3 +1,5 @@
-﻿namespace LoyaltyCard.Application.Commands.UpdateLoyaltyCard;
+﻿using MediatR;
 
-public record UpdateLoyaltyCardCommand(Guid CustomerId, int PointsToAdd);    
+namespace LoyaltyCard.Application.Commands.UpdateLoyaltyCard;
+
+public record UpdateLoyaltyCardCommand(Guid CustomerId, int PointsToAdd) : IRequest<Guid>;

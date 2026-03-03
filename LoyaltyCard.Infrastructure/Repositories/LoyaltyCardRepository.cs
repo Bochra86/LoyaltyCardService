@@ -2,6 +2,7 @@
 using LoyaltyCard.Domain.Entities;
 using LoyaltyCard.Application.Interfaces;
 using LoyaltyCard.Infrastructure.Persistence;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace LoyaltyCard.Infrastructure.Repositories;

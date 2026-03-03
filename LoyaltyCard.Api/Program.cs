@@ -1,9 +1,13 @@
+using LoyaltyCard.Application;
 using LoyaltyCard.Infrastructure;
 
 //1. Create a WebApplication builder
 var builder = WebApplication.CreateBuilder(args);
 
+
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddApplication();
+
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddControllers();

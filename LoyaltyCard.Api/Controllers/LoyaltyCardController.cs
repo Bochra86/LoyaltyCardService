@@ -1,57 +1,65 @@
-﻿using LoyaltyCard.Application.Queries.GetLoyaltyCardByCustomerId;
-using LoyaltyCard.Application.Commands.AddLoyaltyCard;
+﻿using LoyaltyCard.Application.Commands.AddLoyaltyCard;
 using LoyaltyCard.Application.Commands.UpdateLoyaltyCard;
+using LoyaltyCard.Application.Queries.GetLoyaltyCardByCustomerId;
 using LoyaltyCard.Application.Dtos;
+
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LoyaltyCard.Api.Controllers;
-
 
 [ApiController]
 [Route("api/[controller]")]
 public class LoyaltyCardController : ControllerBase
 {
-    private readonly GetLoyaltyCardByCustomerIdHandler _getHandler;
-    private readonly AddLoyaltyCardHandler _addHandler;
-    private readonly UpdateLoyaltyCardHandler _updateHandler;
+    private readonly IMediator _mediator;
 
-    public LoyaltyCardController(GetLoyaltyCardByCustomerIdHandler getHandler,
-        AddLoyaltyCardHandler addHandler, UpdateLoyaltyCardHandler updateHandler)
+    public LoyaltyCardController(IMediator mediator)
     {
-        _addHandler = addHandler;
-        _updateHandler = updateHandler;
-        _getHandler = getHandler;
+        _mediator = mediator;
     }
 
+    // ===================== GET =====================
 
-    [HttpGet("{customerId}")]
+    [HttpGet("{customerId:guid}")]
     [ProducesResponseType(typeof(LoyaltyCardResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<LoyaltyCardResponseDto>> GetByCustomerId([FromRoute] GetLoyaltyCardByCustomerIdQuery query, CancellationToken token)
+    public async Task<ActionResult<LoyaltyCardResponseDto>> GetByCustomerId(
+        Guid customerId,
+        CancellationToken token)
     {
-        var result = await _getHandler.HandleAsync(query, token);
+        var query = new GetLoyaltyCardByCustomerIdQuery(customerId);
+
+        var result = await _mediator.Send(query, token);
 
         if (result is null)
             return NotFound();
 
-        return result; // Implicitly converts to Ok(result) 
+        return Ok(result);
     }
 
+    // ===================== POST =====================
 
     [HttpPost]
-    public async Task<IActionResult> Create(AddLoyaltyCardDto dto,CancellationToken token)
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    public async Task<IActionResult> Create([FromBody] AddLoyaltyCardDto dto,CancellationToken token)
     {
         var command = new AddLoyaltyCardCommand(dto.CustomerId);
-        await _addHandler.HandleAsync(command, token);
 
-        return Ok("Loyalty card created");
+        var id = await _mediator.Send(command, token);
+
+        return CreatedAtAction(nameof(GetByCustomerId),new { customerId = dto.CustomerId },id);
     }
 
-    [HttpPut("points")]
-    public async Task<IActionResult> UpdatePoints(Guid customerId, UpdateLoyaltyCardPointsDto dto, CancellationToken token)
+    // ===================== PUT =====================
+
+    [HttpPut("{customerId:guid}/points")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> UpdatePoints(Guid customerId,[FromBody] UpdateLoyaltyCardPointsDto dto, CancellationToken token)
     {
         var command = new UpdateLoyaltyCardCommand(customerId, dto.Points);
-        await _updateHandler.HandleAsync(command, token);
+
+        await _mediator.Send(command, token);
 
         return NoContent();
     }
